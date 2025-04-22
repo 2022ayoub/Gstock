@@ -198,7 +198,7 @@ nav .profile-details i {
   margin-left:15px;
 }
 
-.overview-boxes .client,.overview-boxes .vente{
+.overview-boxes .client,.overview-boxes .vente,.overview-boxes .commande{
   width:800px;
 }
 
@@ -568,3 +568,67 @@ ul.mtable li:nth-child(even),
 ol.mtable li:nth-child(even){
   background-color: #f2f2f2;
 }
+
+
+
+/* ======= Recu ===== */
+.cote-a-cote{
+  display: flex;
+  justify-content: space-between;
+}
+
+.page{
+  width:750px;
+  min-height: 850px;
+  padding: 20px;
+  margin: 10px auto;
+  border: 1px solid #546161;
+  border-radius: 5px;
+  background-color: white;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+}
+.subpage{
+  padding: 1cm;
+  border: 3px red solid;
+  height: 237mm;
+  outline: 2cm solid #ffcaca;
+}
+
+
+@media print{
+  @page {
+    size: A4 portrait;
+    margin: 0;
+  }
+
+  html, body {
+    width: 210mm;
+    height: 297mm;
+  }
+  .hidden-print ,
+  .hidden-print * {
+    display: none !important;
+  }
+
+  /* .page{
+    margin: 0;
+    border: initial;
+    border-radius: initial;
+    width: initial;
+    min-height: initial;
+    box-shadow: initial;
+    background: initial;
+    page-break-after: always;
+  } */
+   .page{
+    width: 650px;
+    height:100%;
+    margin-top:-30px;
+    margin-left: 0px;
+   }
+}
+
+
+
+
+

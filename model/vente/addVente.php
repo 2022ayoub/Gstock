@@ -29,7 +29,7 @@ if(
 
     if($result){
       $diff=$qt-$qtite;
-      $sql="update article set quantity='$diff' where $id_art= $aId";
+      $sql="update article set quantity='$diff' where id= $aId";
       $result_diff=mysqli_query($conn,$sql);
       if($result_diff){
         $_SESSION["message"]["text"]="The vente is complete successfully ";

@@ -1,23 +1,23 @@
 <?php 
 include("../config/connect.php");
 include("../model/article/getArticle.php");
-include("../model/client/getClient.php");
-include("../model/vente/getVente.php");
+include("../model/fournisseur/getFournisseur.php");
+include("../model/commande/getCommande.php");
 include("./head.php");
 
 if(!empty($_GET["id"])){
-  $vente=getVente($conn,$_GET["id"]);
+  $commande=getCommande($conn,$_GET["id"]);
 }
 
-$ventes=getVentes($conn);
+$commandes=getCommandes($conn);
 
 ?>
 <div class="home-content">
   <div class="overview-boxes">
     <div class="box">
-      <form action="<?= !empty($_GET["id"]) ? "../model/vente/updateVente.php" : "../model/vente/addVente.php" ?>" method="post">
+      <form action="<?= !empty($_GET["id"]) ? "../model/commande/updateCommande.php" : "../model/commande/addCommande.php" ?>" method="post">
 
-        <input type="hidden" name="id" id="id" value="<?= $vente["id"] ?>">
+        <input type="hidden" name="id" id="id" value="<?= $commande["id"] ?>">
 
         
         <label for="articleId">Article :</label>
@@ -29,7 +29,7 @@ $ventes=getVentes($conn);
             ?>
                 <?php if($value["quantity"]!="0"){ ?>
                   <option data-prix="<?=$value["unitairePrice"] ?>"
-                    <?= !empty($_GET["id"]) && $vente["articleId"]==$value["id"]?"selected" : "" ?>
+                    <?= !empty($_GET["id"]) && $commande["articleId"]==$value["id"]?"selected" : "" ?>
                   value="<?= $value["id"] ?>"><?= $value["articleName"]. " "."-".$value["quantity"]." disponible" ?>
                   </option>
                 <?php }?>
@@ -37,15 +37,15 @@ $ventes=getVentes($conn);
             <?php endforeach;endif;?>
          </select>
 
-         <label for="clientId">Client :</label>
-         <select name="clientId" id="clientId">
-            <option selected hidden disabled >Choose the Client</option>
+         <label for="fournisseurId">Fournisseur :</label>
+         <select name="fournisseurId" id="fournisseurId">
+            <option selected hidden disabled >Choose the Fournisseur</option>
             <?php
-              $clients=getClients($conn);
-              if(!empty($clients) && is_array($clients)):foreach($clients as $key=>$value):
+              $fournisseurs=getFournisseurs($conn);
+              if(!empty($fournisseurs) && is_array($fournisseurs)):foreach($fournisseurs as $key=>$value):
             ?>
                 
-              <option <?= !empty($_GET["id"]) && $vente["clientId"]==$value["id"]?"selected" : "" ?> value="<?= $value["id"] ?>"><?= $value["firstName"]." ".$value["lastName"] ?></option>
+              <option <?= !empty($_GET["id"]) && $commande["fournisseurId"]==$value["id"]?"selected" : "" ?> value="<?= $value["id"] ?>"><?= $value["firstName"]." ".$value["lastName"] ?></option>
 
             <?php endforeach;endif;?>
          </select>
@@ -53,15 +53,15 @@ $ventes=getVentes($conn);
         
          <label for="quantity">Quantity :</label>
         <input type="number" name="quantity" id="quantity" placeholder="Write the quantity"
-          value="<?= !empty($_GET["id"])? $vente["quantity"] : "" ?>" >
+          value="<?= !empty($_GET["id"])? $commande["quantity"] : "" ?>" >
 
         <label for="price"> Price :</label>
         <input type="number" name="price" id="price" placeholder="Write the  price "
-          value="<?= !empty($_GET["id"])? $vente["price"] : "" ?>" >
+          value="<?= !empty($_GET["id"])? $commande["price"] : "" ?>" >
 
-        <label for="venteDate">Vente Date :</label>
-        <input type="datetime-local" name="venteDate" id="venteDate" 
-          value="<?= !empty($_GET["id"])? $vente["venteDate"] : "" ?>">
+        <label for="commandeDate">commande Date :</label>
+        <input type="datetime-local" name="commandeDate" id="commandeDate" 
+          value="<?= !empty($_GET["id"])? $commande["commandeDate"] : "" ?>">
 
 
         <div class="btns">
@@ -72,22 +72,22 @@ $ventes=getVentes($conn);
       </form>
     </div>
     
-    <div class="box vente">
-      <?php if(empty($ventes) || !is_array($ventes)){?>
-        <h1>No Ventes exists now</h1>
+    <div class="box commande">
+      <?php if(empty($commandes) || !is_array($commandes)){?>
+        <h1>No Commandes exists now</h1>
       <?php }else{ ?>
         <table class="mtable">
           <tr>
             <th>Article </th>
-            <th>Client </th>
+            <th>Fournisseur </th>
             <th>Quantity </th>
             <th>Price </th>
-            <th>Vente Date</th>
+            <th>Commande Date</th>
             <th>Action</th>
           </tr>
 
           <?php 
-            foreach($ventes as $key=>$val):
+            foreach($commandes as $key=>$val):
               if($val["status"]!=="0"){
           ?>
           
@@ -101,17 +101,16 @@ $ventes=getVentes($conn);
 
               <td>
                 <?php
-                  $ct=getClient($conn,$val["clientId"]);
+                  $ct=getFournisseur($conn,$val["fournisseurId"]);
                   echo $ct["firstName"],"  ",$ct["lastName"];
                 ?>
               </td>
               <td><?php echo $val["quantity"] ?></td>
               <td><?php echo $val["price"] ?></td>
-              <td><?php echo date("Y-m-d H:i",strtotime($val["venteDate"]))?></td>
+              <td><?php echo date("Y-m-d H:i",strtotime($val["commandeDate"]))?></td>
               <td>
                 <a href="?id=<?=$val["id"]?>"><i class='bx bx-edit-alt' style="font-size:30px;color:blueviolet" ></i></a>
-                <a href="recuVente.php?id=<?=$val["id"]?>"><i class='bx bxs-printer' style="font-size:30px;margin-left:10px;color:green"></i></a>
-                <a onClick="annulerVente(<?=$val['id']?>,<?=$val['articleId']?>,<?=$val['quantity']?>)" style="cursor:pointer">
+                <a onClick="annulerCommande(<?=$val['id']?>,<?=$val['articleId']?>,<?=$val['quantity']?>)" style="cursor:pointer">
                   <i class='bx bx-stop-circle'style="font-size:30px;margin-left:10px;color:red;" ></i>
                 </a>
               </td>
@@ -170,9 +169,9 @@ $ventes=getVentes($conn);
   document.querySelector("#quantity").onkeyup=()=>{setTotalPrice();}
 
 
-  function annulerVente(idvente,idarticle,quantity){
-    if(confirm("do you really want to cancel the vente !")){
-      window.location.href=`../model/vente/annuleVente.php?idvente=${idvente}&idarticle=${idarticle}&quantity=${quantity}`;
+  function annulerCommande(idcommande,idarticle,quantity){
+    if(confirm("do you really want to cancel the commande !")){
+      window.location.href=`../model/commande/annuleCommande.php?idcommande=${idcommande}&idarticle=${idarticle}&quantity=${quantity}`;
     }
   }
 </script>
